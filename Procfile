@@ -1,1 +1,1 @@
-worker: python GerenciadorDeGastos/bot.py
+worker: python bot.py
