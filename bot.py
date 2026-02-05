@@ -83,11 +83,12 @@ def main():
 
 if __name__ == "__main__":
     TELEGRAM_TOKEN = os.getenv("TELEGRAM_TOKEN")
-    
+    print(TELEGRAM_TOKEN)
     if not TELEGRAM_TOKEN:
         raise Exception("❌ TELEGRAM_TOKEN não configurado nas variáveis de ambiente")
 
     main()
+
 
 
 
