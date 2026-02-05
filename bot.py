@@ -67,6 +67,9 @@ async def handler(update, context):
         await update.message.reply_text(f"❌ Erro ao interpretar: {e}")
 
 def main():
+    TELEGRAM_TOKEN = os.getenv("TELEGRAM_TOKEN")
+    if not TELEGRAM_TOKEN:
+        raise Exception("❌ TELEGRAM_TOKEN não configurado nas variáveis de ambiente")
     app = ApplicationBuilder().token(TELEGRAM_TOKEN).build()
     app.add_handler(MessageHandler(filters.TEXT & ~filters.COMMAND, handler))
     app.add_handler(CommandHandler("start", start_cmd))
@@ -82,11 +85,6 @@ def main():
 
 
 if __name__ == "__main__":
-    TELEGRAM_TOKEN = os.getenv("TELEGRAM_TOKEN")
-    print(TELEGRAM_TOKEN)
-    if not TELEGRAM_TOKEN:
-        raise Exception("❌ TELEGRAM_TOKEN não configurado nas variáveis de ambiente")
-
     main()
 
 
