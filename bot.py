@@ -8,6 +8,9 @@ from datetime import datetime
 from beneficiarios import listar_beneficiarios, beneficiario_valido
 from sheets import get_sheet
 
+
+if __name__ == "__main__":
+    
 async def handler(update, context):
     texto = update.message.text.strip()
     chat_id = update.effective_user.id
@@ -65,9 +68,7 @@ async def handler(update, context):
 
     except Exception as e:
         await update.message.reply_text(f"❌ Erro ao interpretar: {e}")
-
-
-if __name__ == "__main__":
+    
     TELEGRAM_TOKEN = os.getenv("TELEGRAM_TOKEN")
     if not TELEGRAM_TOKEN:
         raise Exception("❌ TELEGRAM_TOKEN não configurado nas variáveis de ambiente")
@@ -82,6 +83,7 @@ if __name__ == "__main__":
     app.add_handler(CommandHandler("entrada", set_entrada_cmd))
     
     app.run_polling()
+
 
 
 
