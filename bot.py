@@ -8,12 +8,6 @@ from datetime import datetime
 from beneficiarios import listar_beneficiarios, beneficiario_valido
 from sheets import get_sheet
 
-TELEGRAM_TOKEN = os.getenv("TELEGRAM_TOKEN")
-
-if not TELEGRAM_TOKEN:
-    raise Exception("❌ TELEGRAM_TOKEN não configurado nas variáveis de ambiente")
-
-
 async def handler(update, context):
     texto = update.message.text.strip()
     chat_id = update.effective_user.id
@@ -72,15 +66,29 @@ async def handler(update, context):
     except Exception as e:
         await update.message.reply_text(f"❌ Erro ao interpretar: {e}")
 
+def main():
+    app = ApplicationBuilder().token(TELEGRAM_TOKEN).build()
+    app.add_handler(MessageHandler(filters.TEXT & ~filters.COMMAND, handler))
+    app.add_handler(CommandHandler("start", start_cmd))
+    app.add_handler(CommandHandler("help", help_cmd))
+    app.add_handler(CommandHandler("resumo", resumo_cmd))
+    app.add_handler(CommandHandler("quem", quem_cmd))
+    app.add_handler(CommandHandler("insights", insights_cmd))
+    app.add_handler(CommandHandler("beneficiario", add_beneficiario_cmd))
+    app.add_handler(CommandHandler("entrada", set_entrada_cmd))
+    
+    app.run_polling()
 
-app = ApplicationBuilder().token(TELEGRAM_TOKEN).build()
-app.add_handler(MessageHandler(filters.TEXT & ~filters.COMMAND, handler))
-app.add_handler(CommandHandler("start", start_cmd))
-app.add_handler(CommandHandler("help", help_cmd))
-app.add_handler(CommandHandler("resumo", resumo_cmd))
-app.add_handler(CommandHandler("quem", quem_cmd))
-app.add_handler(CommandHandler("insights", insights_cmd))
-app.add_handler(CommandHandler("beneficiario", add_beneficiario_cmd))
-app.add_handler(CommandHandler("entrada", set_entrada_cmd))
 
-app.run_polling()
+
+if __name__ == "__main__":
+    TELEGRAM_TOKEN = os.getenv("TELEGRAM_TOKEN")
+    
+    if not TELEGRAM_TOKEN:
+        raise Exception("❌ TELEGRAM_TOKEN não configurado nas variáveis de ambiente")
+
+    main()
+
+
+
+
