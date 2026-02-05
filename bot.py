@@ -66,7 +66,8 @@ async def handler(update, context):
     except Exception as e:
         await update.message.reply_text(f"❌ Erro ao interpretar: {e}")
 
-def main():
+
+if __name__ == "__main__":
     TELEGRAM_TOKEN = os.getenv("TELEGRAM_TOKEN")
     if not TELEGRAM_TOKEN:
         raise Exception("❌ TELEGRAM_TOKEN não configurado nas variáveis de ambiente")
@@ -82,10 +83,6 @@ def main():
     
     app.run_polling()
 
-
-
-if __name__ == "__main__":
-    main()
 
 
 
