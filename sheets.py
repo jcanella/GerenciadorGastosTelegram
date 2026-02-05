@@ -1,48 +1,46 @@
+import os
+import json
 import gspread
 from oauth2client.service_account import ServiceAccountCredentials
 from gspread.exceptions import WorksheetNotFound, SpreadsheetNotFound
-from settings import USUARIOS
-import os
-import json
 
-creds_dict = json.loads(os.getenv("GOOGLE_CREDENTIALS"))
+# ===============================
+# CONFIGURAÇÕES VIA ENV
+# ===============================
 
-scope = [
+USUARIOS = json.loads(os.getenv("USUARIOS", "{}"))
+GOOGLE_CREDENTIALS = json.loads(os.getenv("GOOGLE_CREDENTIALS"))
+
+# ===============================
+# GOOGLE SHEETS CLIENT (GLOBAL)
+# ===============================
+
+SCOPE = [
     "https://spreadsheets.google.com/feeds",
     "https://www.googleapis.com/auth/drive"
 ]
 
-creds = ServiceAccountCredentials.from_json_keyfile_dict(
-    creds_dict,
-    scope
+CREDS = ServiceAccountCredentials.from_json_keyfile_dict(
+    GOOGLE_CREDENTIALS,
+    SCOPE
 )
 
-client = gspread.authorize(creds)
+CLIENT = gspread.authorize(CREDS)
 
+# ===============================
+# FUNÇÃO PRINCIPAL
+# ===============================
 
 def get_sheet(nome_aba: str, chat_id: int):
+    chat_id = str(chat_id)  # 🔑 ENV sempre usa string
+
     if chat_id not in USUARIOS:
         raise Exception("❌ Usuário não autorizado")
 
-    creds_dict = json.loads(os.getenv("GOOGLE_CREDENTIALS"))
-
-    scope = [
-        "https://spreadsheets.google.com/feeds",
-        "https://www.googleapis.com/auth/drive"
-    ]
-
-    creds = ServiceAccountCredentials.from_json_keyfile_dict(
-        creds_dict,
-        scope
-    )
-
-    planilha_nome = USUARIOS[str(chat_id)]["planilha"]
-
-    creds = ServiceAccountCredentials.from_json_keyfile_name("cred.json", scope)
-    client = gspread.authorize(creds)
+    planilha_nome = USUARIOS[chat_id]["planilha"]
 
     try:
-        spreadsheet = client.open(planilha_nome)
+        spreadsheet = CLIENT.open(planilha_nome)
     except SpreadsheetNotFound:
         raise Exception(f"❌ Planilha '{planilha_nome}' não encontrada")
 
