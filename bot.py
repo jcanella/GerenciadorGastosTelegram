@@ -1,6 +1,6 @@
 from telegram.ext import ApplicationBuilder, MessageHandler, CommandHandler, filters
 from commands import help_cmd, resumo_cmd, quem_cmd, insights_cmd , add_beneficiario_cmd, set_entrada_cmd, start_cmd
-from config import TELEGRAM_TOKEN
+from settings import TELEGRAM_TOKEN
 from router import get_user_sheet
 from parser import extrair_data, extrair_valor, limpar_texto
 from categories import classificar
@@ -79,3 +79,4 @@ app.add_handler(CommandHandler("beneficiario", add_beneficiario_cmd))
 app.add_handler(CommandHandler("entrada", set_entrada_cmd))
 
 app.run_polling()
+
