@@ -10,65 +10,64 @@ from sheets import get_sheet
 
 
 if __name__ == "__main__":
-    
-async def handler(update, context):
-    texto = update.message.text.strip()
-    chat_id = update.effective_user.id
-
-    if texto.startswith("/"):
-        return
-
-    try:
-        data = extrair_data(texto)
-        valor = extrair_valor(texto)
-        texto_limpo = limpar_texto(texto, valor)
-
-        palavras = texto_limpo.lower().split()
-        beneficiarios = listar_beneficiarios(chat_id)
-
-        beneficiario = "eu"
-        descricao_palavras = []
-
-        for p in palavras:
-            if p in beneficiarios:
-                beneficiario = p
-            else:
-                descricao_palavras.append(p)
-
-        descricao = " ".join(descricao_palavras)
-
-        if not beneficiario_valido(beneficiario, chat_id):
-            raise Exception(f"Beneficiário '{beneficiario}' não cadastrado")
-
-
-        categoria = classificar(descricao)
-
-        chat_id = update.effective_chat.id
-        sheet = get_sheet("GASTOS", chat_id)
+    async def handler(update, context):
+        texto = update.message.text.strip()
+        chat_id = update.effective_user.id
         
-        sheet.append_row([
-            str(uuid.uuid4()),
-            data.strftime("%Y-%m-%d"),
-            valor,
-            categoria,
-            beneficiario,
-            descricao,
-            datetime.now().isoformat()
-        ])
-
-        await update.message.reply_text(
-            f"✅ Gasto registrado com sucesso!\n"
-            f"📅 {data.strftime('%d/%m')}\n"
-            f"💰 R$ {valor:.2f}\n"
-            f"👤 {beneficiario}\n"
-            f"🏷️ {categoria}\n"
-            f"📝 {descricao}"
-        )
-
-
-    except Exception as e:
-        await update.message.reply_text(f"❌ Erro ao interpretar: {e}")
-    
+        if texto.startswith("/"):
+            return
+        
+        try:
+            data = extrair_data(texto)
+            valor = extrair_valor(texto)
+            texto_limpo = limpar_texto(texto, valor)
+        
+            palavras = texto_limpo.lower().split()
+            beneficiarios = listar_beneficiarios(chat_id)
+        
+            beneficiario = "eu"
+            descricao_palavras = []
+        
+            for p in palavras:
+                if p in beneficiarios:
+                    beneficiario = p
+                else:
+                    descricao_palavras.append(p)
+        
+            descricao = " ".join(descricao_palavras)
+        
+            if not beneficiario_valido(beneficiario, chat_id):
+                raise Exception(f"Beneficiário '{beneficiario}' não cadastrado")
+        
+        
+            categoria = classificar(descricao)
+        
+            chat_id = update.effective_chat.id
+            sheet = get_sheet("GASTOS", chat_id)
+            
+            sheet.append_row([
+                str(uuid.uuid4()),
+                data.strftime("%Y-%m-%d"),
+                valor,
+                categoria,
+                beneficiario,
+                descricao,
+                datetime.now().isoformat()
+            ])
+        
+            await update.message.reply_text(
+                f"✅ Gasto registrado com sucesso!\n"
+                f"📅 {data.strftime('%d/%m')}\n"
+                f"💰 R$ {valor:.2f}\n"
+                f"👤 {beneficiario}\n"
+                f"🏷️ {categoria}\n"
+                f"📝 {descricao}"
+            )
+        
+        
+        except Exception as e:
+            await update.message.reply_text(f"❌ Erro ao interpretar: {e}")
+            
     TELEGRAM_TOKEN = os.getenv("TELEGRAM_TOKEN")
     if not TELEGRAM_TOKEN:
         raise Exception("❌ TELEGRAM_TOKEN não configurado nas variáveis de ambiente")
@@ -83,6 +82,7 @@ async def handler(update, context):
     app.add_handler(CommandHandler("entrada", set_entrada_cmd))
     
     app.run_polling()
+
 
 
 
