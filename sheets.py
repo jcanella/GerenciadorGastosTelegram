@@ -1,14 +1,15 @@
 import gspread
 from oauth2client.service_account import ServiceAccountCredentials
 from gspread.exceptions import WorksheetNotFound, SpreadsheetNotFound
-from config import USUARIOS
+from settings import USUARIOS
 
 
 def get_sheet(nome_aba: str, chat_id: int):
     if chat_id not in USUARIOS:
         raise Exception("❌ Usuário não autorizado")
 
-    planilha_nome = USUARIOS[chat_id]["planilha"]
+    
+    planilha_nome = USUARIOS[str(chat_id)]["planilha"]
 
     scope = [
         "https://spreadsheets.google.com/feeds",
