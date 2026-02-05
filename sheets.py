@@ -4,8 +4,8 @@ import gspread
 from oauth2client.service_account import ServiceAccountCredentials
 from gspread.exceptions import WorksheetNotFound, SpreadsheetNotFound
 
-USUARIOS = json.loads(os.getenv("USUARIOS", "{}"))
-GOOGLE_CREDENTIALS = json.loads(os.getenv("GOOGLE_CREDENTIALS"))
+USUARIOS = json.loads(str(os.getenv("USUARIOS", "{}")))
+GOOGLE_CREDENTIALS = json.loads(str(os.getenv("GOOGLE_CREDENTIALS")))
 print(GOOGLE_CREDENTIALS)
 # ===============================
 # GOOGLE SHEETS CLIENT (GLOBAL)
@@ -43,4 +43,5 @@ def get_sheet(nome_aba: str, chat_id: int):
             f"❌ Aba '{nome_aba}' não encontrada.\n"
             f"📄 Abas existentes: {abas}"
         )
+
 
